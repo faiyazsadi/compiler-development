@@ -1,1 +1,11 @@
 import file.h;
+
+/> single line comment
+
+/* multi
+line
+comment
+*/
+
+number a = 10, b;
+number c = e;
