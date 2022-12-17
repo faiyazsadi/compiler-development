@@ -18,6 +18,10 @@
     int VAR_CNT = 0;
     int FUNC_CNT = 0;
     int condition_matched = 0;
+    int current_function = 0;
+    int current_parameter = 0;
+    int function_rejected = 0;
+
     typedef struct {
         char *name;
         int type;
@@ -64,7 +68,42 @@
         printf("Variable name is: %s\n", varptr[p].name);
         printf("Variable value is: %d\n", *varptr[p].ival);
     }
+    void read_value(char *name, int p) {
+        printf("Enter Input for %s: ", name);
+        int index = get_var_index(name);
+        printf("index: %d\n", index);
+        if (index == -1) {
+            var_does_not_exist(name);
+        } else {
+            if(p >= varptr[index].length) {
+                printf("Maximum Number of Variables Used.\n");
+            } else {
+                if (varptr[index].type == DECIMAL) {
+                    scanf("%lf", &varptr[index].dval[p]);
+                } else if (varptr[index].type == NUMBER) {
+                    scanf("%d", &varptr[index].ival[p]);
+                    printf("%d\n", varptr[index].ival[p]);
+                }
+            }
+        }
+    }
+    void print_value(char *name) {
+        int index = get_var_index(name);
+        if(index == -1) {
+            var_does_not_exist(name);
+        } else {
+            if(varptr[index].is_array) {
 
+            } else {
+                printf("Value of %s is: ", name);
+                if(varptr[index].type == NUMBER) {
+                    printf("%d\n", varptr[index].ival[0]);
+                } else if(varptr[index].type == DECIMAL) {
+                    printf("%lf\n", varptr[index].dval[0]);
+                }
+            }
+        }
+    }
     int get_var_index(char *name) {
         for(int i = 0; i < VAR_CNT; ++i) {
             if(strcmp(varptr[i].name, name) == 0) {
@@ -96,7 +135,7 @@
 }
 
 %token HEADER SCOMMENT MCOMMENT EOL
-%token VARIABLE ARROW
+%token VARIABLE ARROW INPUT PRINT
 %token NUMBER_TYPE DECIMAL_TYPE
 %token NUMBER_VALUE DECIMAL_VALUE
 %token AND OR XOR NOT
@@ -104,7 +143,7 @@
 %token LT GT EQL NEQL LEQL GEQL
 %token IF ELIF ELSE
 %token FOR IN WHILE
-%token DEF
+%token DEF CALL
 
 %type <integer> NUMBER_VALUE
 %type <real> DECIMAL_VALUE statements statement assignment expr while_conditions
@@ -122,9 +161,9 @@
 %%
 
 program:
-    HEADER statements {
-    printf("Header Found!\n");
-}
+    statements {
+        printf("Header Found!\n");
+    }
 ;
 
 statements:
@@ -136,6 +175,8 @@ statement:
     EOL
     |SCOMMENT
     |MCOMMENT
+    |input EOL
+    |print EOL
     |declarations EOL
     |assignments EOL
     |if_blocks {
@@ -144,8 +185,36 @@ statement:
     |for_loop
     |while_loop
     |function_declare
-    |function_call
+    |function_call EOL
 ;
+
+print:
+    PRINT '(' output_variable ')' {
+
+    }
+;
+output_variable:
+    output_variable ',' VARIABLE {
+        print_value($3);
+    }
+    |VARIABLE {
+        print_value($1);
+
+    }
+;
+
+input:
+    INPUT '(' input_variable ')' {
+    }
+;
+
+input_variable:
+    input_variable ',' VARIABLE {
+        read_value($3, 0);
+    }
+    |VARIABLE {
+        read_value($1, 0);
+    }
 
 function_declare:
     DEF function_name '(' function_variable ')' ARROW return_types '{' statement '}' {
@@ -160,18 +229,17 @@ return_types:
 function_name:
     VARIABLE {
         int index = get_function_index($1);
-        if(index == -1) {
+        if(index != -1) {
             printf("Function Already Declared.\n");
         } else {
-            printf("Declaring Function.\n");
-            funcptr[FUNC_CNT].fname = malloc((strlen($1) + 1) * sizeof(char));
+            printf("Declaring Function\n");
+            funcptr[FUNC_CNT].fname = malloc((strlen($1) + 10) * sizeof(char));
             strcpy(funcptr[FUNC_CNT].fname, $1);
             funcptr[FUNC_CNT].var_cnt = 0;
             funcptr[FUNC_CNT].fptr = malloc(4 * sizeof(stack));
         }
     }
 function_variable:
-    {}
     |function_variable ',' single_variable
     | single_variable
 ;
@@ -180,22 +248,65 @@ single_variable:
     NUMBER_TYPE VARIABLE {
         int index = funcptr[FUNC_CNT].var_cnt;
         int value = 0;
-        store_value($2, 0, 1, VAR_CNT, &value, 0);
+        store_value($2, NUMBER, 1, VAR_CNT, &value, 0);
         funcptr[FUNC_CNT].fptr[index] = varptr[VAR_CNT];
         VAR_CNT++;
         funcptr[FUNC_CNT].var_cnt++;
+        FUNC_CNT++;
     }
     |DECIMAL_TYPE VARIABLE {
         int index = funcptr[FUNC_CNT].var_cnt;
         double value = 0;
-        store_value($2, 0, 1, VAR_CNT, &value, 0);
+        store_value($2, DECIMAL, 1, VAR_CNT, &value, 0);
         funcptr[FUNC_CNT].fptr[index] = varptr[VAR_CNT];
         VAR_CNT++;
         funcptr[FUNC_CNT].var_cnt++;
+        FUNC_CNT++;
     }
 ;
 
 function_call:
+    CALL user_function_name '(' parameters ')' EOL {
+        if(function_rejected) {
+            printf("Function Not Declared.\n");
+        } else {
+            printf("Function Successfully Called.\n");
+        }
+    }
+;
+
+user_function_name:
+    VARIABLE {
+        int index = get_function_index($1);
+        if(index == -1) {
+            printf("Function Doesn't Exist.\n");
+        } else {
+            current_function = index;
+            current_parameter = 0;
+            function_rejected = 0;
+        }
+    }
+;
+
+parameters:
+    parameters ',' single_parameter
+    |single_parameter
+;
+
+single_parameter: 
+    VARIABLE {
+        int index = get_var_index($1);
+        if(current_parameter > funcptr[current_function].var_cnt) {
+            printf("Way too many arguments.\n");
+            function_rejected = 1;
+        } else if(funcptr[current_function].fptr[current_parameter].type != varptr[index].type) {
+            printf("Data Types Don't Match.\n");
+            function_rejected = 1;
+        } else {
+            current_parameter++;
+        }
+    }
+;
 
 for_loop:
     FOR '(' VARIABLE IN '[' expr ',' expr ',' expr ']' ')' '{' statement '}' {
@@ -525,8 +636,10 @@ expr:
 int main() {
     varptr = malloc(MAXN_VAR_ALLOWED * sizeof(info));
     funcptr = malloc(MAXN_FUNC_ALLOWED * sizeof(stack));
-    FILE *yyin = freopen("input.txt", "r", stdin);
+    // FILE *yyin = freopen("input.txt", "r", stdin);
     yyparse();
-    fclose(yyin);
+    // fclose(yyin);
+    free(varptr);
+    free(funcptr);
     return 0;
 }

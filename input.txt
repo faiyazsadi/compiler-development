@@ -8,7 +8,7 @@ comment
 */
 
 number a = 11, b = 20, c = 2;
-
+input(a);
 if(a > b) {  
     number e = 10;
 }
@@ -34,6 +34,9 @@ while(a++ !!! 15) {
     ;
 }
 
-def print() -> number {
+
+
+def func(number h, number i) -> number {
     ;
 }
+call func(a, b);

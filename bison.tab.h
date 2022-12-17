@@ -45,29 +45,32 @@
      EOL = 261,
      VARIABLE = 262,
      ARROW = 263,
-     NUMBER_TYPE = 264,
-     DECIMAL_TYPE = 265,
-     NUMBER_VALUE = 266,
-     DECIMAL_VALUE = 267,
-     AND = 268,
-     OR = 269,
-     XOR = 270,
-     NOT = 271,
-     INC = 272,
-     DEC = 273,
-     LT = 274,
-     GT = 275,
-     EQL = 276,
-     NEQL = 277,
-     LEQL = 278,
-     GEQL = 279,
-     IF = 280,
-     ELIF = 281,
-     ELSE = 282,
-     FOR = 283,
-     IN = 284,
-     WHILE = 285,
-     DEF = 286
+     INPUT = 264,
+     PRINT = 265,
+     NUMBER_TYPE = 266,
+     DECIMAL_TYPE = 267,
+     NUMBER_VALUE = 268,
+     DECIMAL_VALUE = 269,
+     AND = 270,
+     OR = 271,
+     XOR = 272,
+     NOT = 273,
+     INC = 274,
+     DEC = 275,
+     LT = 276,
+     GT = 277,
+     EQL = 278,
+     NEQL = 279,
+     LEQL = 280,
+     GEQL = 281,
+     IF = 282,
+     ELIF = 283,
+     ELSE = 284,
+     FOR = 285,
+     IN = 286,
+     WHILE = 287,
+     DEF = 288,
+     CALL = 289
    };
 #endif
 
@@ -78,7 +81,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 92 "bison.y"
+#line 131 "bison.y"
 
 	int integer;
 	double real;
@@ -87,7 +90,7 @@ typedef union YYSTYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 91 "bison.tab.h"
+#line 94 "bison.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

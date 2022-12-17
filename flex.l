@@ -67,6 +67,12 @@ DOUBLE                    [0-9]+[.][0-9]+
     return DECIMAL_TYPE;
 }
 
+"input" {
+    return INPUT;
+}
+"print" {
+    return PRINT;
+}
 "if" {
     return IF;
 }
@@ -90,6 +96,9 @@ DOUBLE                    [0-9]+[.][0-9]+
 }
 "->" {
     return ARROW;
+}
+"call" {
+    return CALL;
 }
 "++" {
     return INC;
