@@ -67,6 +67,69 @@ DOUBLE                    [0-9]+[.][0-9]+
     return DECIMAL_TYPE;
 }
 
+"if" {
+    return IF;
+}
+"elif" {
+    return ELIF;
+}
+"else" {
+    return ELSE;
+}
+"for" {
+    return FOR;
+}
+"in" {
+    return IN;
+}
+"while" {
+    return WHILE;
+}
+"def" {
+    return DEF;
+}
+"->" {
+    return ARROW;
+}
+"++" {
+    return INC;
+}
+
+"--" {
+    return DEC;
+}
+"===" {
+    return EQL;
+}										
+"!!!" {
+    return NEQL;
+}
+"<" {
+    return LT;
+}
+">" {
+    return GT;
+}
+"<=" {
+    return LEQL;
+}
+">=" {
+    return GEQL;
+}
+"&&" {
+    return AND;
+}
+"||" {
+    return OR;
+}
+"^^" {
+    return XOR;
+}
+"~~" {
+    return NOT;
+}
+
+
 {IDENTIFIER} {
     yylval.string = strdup(yytext);
     return VARIABLE;

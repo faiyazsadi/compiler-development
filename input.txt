@@ -7,5 +7,33 @@ line
 comment
 */
 
-number a = 10, b;
-number c = e;
+number a = 11, b = 20, c = 2;
+
+if(a > b) {  
+    number e = 10;
+}
+elif(a < b) {
+    number eq = 69;
+}
+else {
+    number f = 20;
+}
+
+
+for(i in [1, 10, 2]) {
+    ;
+}
+
+while(a++ <= b) {
+    ;
+}
+while(b-- > 15) {
+    ;
+}
+while(a++ !!! 15) {
+    ;
+}
+
+def print() -> number {
+    ;
+}

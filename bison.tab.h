@@ -44,10 +44,30 @@
      MCOMMENT = 260,
      EOL = 261,
      VARIABLE = 262,
-     NUMBER_TYPE = 263,
-     DECIMAL_TYPE = 264,
-     NUMBER_VALUE = 265,
-     DECIMAL_VALUE = 266
+     ARROW = 263,
+     NUMBER_TYPE = 264,
+     DECIMAL_TYPE = 265,
+     NUMBER_VALUE = 266,
+     DECIMAL_VALUE = 267,
+     AND = 268,
+     OR = 269,
+     XOR = 270,
+     NOT = 271,
+     INC = 272,
+     DEC = 273,
+     LT = 274,
+     GT = 275,
+     EQL = 276,
+     NEQL = 277,
+     LEQL = 278,
+     GEQL = 279,
+     IF = 280,
+     ELIF = 281,
+     ELSE = 282,
+     FOR = 283,
+     IN = 284,
+     WHILE = 285,
+     DEF = 286
    };
 #endif
 
@@ -58,7 +78,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 74 "bison.y"
+#line 92 "bison.y"
 
 	int integer;
 	double real;
@@ -67,7 +87,7 @@ typedef union YYSTYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 71 "bison.tab.h"
+#line 91 "bison.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
