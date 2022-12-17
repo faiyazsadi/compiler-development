@@ -7,6 +7,7 @@
 IDENTIFIER                [a-zA-Z][_a-zA-Z0-9]*
 INTEGER                   [0-9]*
 DOUBLE                    [0-9]+[.][0-9]+
+STRING                    \"(\\.|[^"\\])*\"
 
 %%
 "import"[ ]+{IDENTIFIER}[.][h][ ]* {
@@ -65,6 +66,9 @@ DOUBLE                    [0-9]+[.][0-9]+
 
 "decimal"[ ]+ {
     return DECIMAL_TYPE;
+}
+"string"[ ]+ {
+    return STRING_TYPE;
 }
 
 "input" {
@@ -137,7 +141,30 @@ DOUBLE                    [0-9]+[.][0-9]+
 "~~" {
     return NOT;
 }
-
+"**" {
+    return POW;
+}
+"sin" {
+    return SIN;
+}
+"cos" {
+    return COS;
+}
+"tan" {
+    return TAN;
+}
+"log10" {
+    return LOG10;
+}
+"log2" {
+    return LOG2;
+}
+"ln" {
+    return LN;
+}
+"sqrt" {
+    return SQRT;
+}
 
 {IDENTIFIER} {
     yylval.string = strdup(yytext);
@@ -154,6 +181,15 @@ DOUBLE                    [0-9]+[.][0-9]+
     return DECIMAL_VALUE;
 }
 
+{STRING} {
+    char* tmp = strdup(yytext);
+    int n = strlen(tmp);
+    yylval.string = malloc(n * sizeof(char));
+    memcpy(yylval.string, &tmp[1], n  - 2);
+    yylval.string[n - 2]= '\0';
+    return STRING_VALUE;
+}
+
 
 [ \t\n] {
 }
@@ -164,7 +200,6 @@ DOUBLE                    [0-9]+[.][0-9]+
 . {
     printf("Unknown Character. %s\n", yytext);
 }
-
 
 
 %%

@@ -7,36 +7,52 @@ line
 comment
 */
 
+decimal val = sin(90);
+decimal p = 2 ** 3;
+
+number x = 1, y = 0;
+number z = x ^^ y;
+
 number a = 11, b = 20, c = 2;
-input(a);
+print(a, b, c);
+decimal d = 1.10, e = d;
+string s = "text";
+print(s);
+
+/> input(a, b);
+/> input(d);
+
 if(a > b) {  
-    number e = 10;
+    number es = 10;
 }
 elif(a < b) {
     number eq = 69;
 }
 else {
-    number f = 20;
+    number ef = 20;
 }
 
+number aa = b % 3;
+print(aa);
+
+number bb = a <= b;
+print(bb);
 
 for(i in [1, 10, 2]) {
-    ;
+    print(a);
 }
 
 while(a++ <= b) {
-    ;
+    print(a);
 }
 while(b-- > 15) {
-    ;
+    print(a);
 }
 while(a++ !!! 15) {
+    print(a);
+}
+def func() -> number {
     ;
 }
 
-
-
-def func(number h, number i) -> number {
-    ;
-}
-call func(a, b);
+call func();

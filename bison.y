@@ -12,6 +12,7 @@
     #define DUPLICATE -1
     #define NUMBER  1
     #define DECIMAL 2
+    #define STRING 3
 
     const int MAXN_VAR_ALLOWED = 20;
     const int MAXN_FUNC_ALLOWED = 20;
@@ -53,6 +54,17 @@
         printf("Variable named \"%s\" already exists.\n", name);
     }
 
+    void var_does_not_exist(char *name) {
+        printf("Variable named \"%s\" doesn't exist.\n", name);
+    }
+    int get_var_index(char *name) {
+        for(int i = 0; i < VAR_CNT; ++i) {
+            if(strcmp(varptr[i].name, name) == 0) {
+                return i;
+            }
+        }
+        return -1;
+    }
     void store_value(char *n, int t, int l, int p, void *v, int is_Array) {
         varptr[p].name = n;
         varptr[p].type = t;
@@ -64,9 +76,25 @@
             for(int i = 0; i < l; ++i) {
                 varptr[p].ival[i] = value[i];
             }
+            printf("Variable name is: %s\n", varptr[p].name);
+            printf("Variable value is: %d\n", *varptr[p].ival);
+        } else if(t == DECIMAL) {
+            double *value = (double *) v;
+            varptr[p].dval = malloc(l * sizeof(double));
+            for(int i = 0; i < l; ++i) {
+                varptr[p].dval[i] = value[i];
+            }
+            printf("Variable name is: %s\n", varptr[p].name);
+            printf("Variable value is: %lf\n", *varptr[p].dval);
+        } else if(t == STRING) {
+            char **s = ((char**) v);
+            varptr[p].sval = malloc(l * sizeof(char**));
+            for(int i = 0; i < l; ++i) {
+                varptr[p].sval[i] = s[i];
+            }
+            printf("Variable name is: %s\n", varptr[p].name);
+            printf("Variable value is: %s\n", *varptr[p].sval);
         }
-        printf("Variable name is: %s\n", varptr[p].name);
-        printf("Variable value is: %d\n", *varptr[p].ival);
     }
     void read_value(char *name, int p) {
         printf("Enter Input for %s: ", name);
@@ -83,6 +111,10 @@
                 } else if (varptr[index].type == NUMBER) {
                     scanf("%d", &varptr[index].ival[p]);
                     printf("%d\n", varptr[index].ival[p]);
+                } else if(varptr[index].type == STRING) {
+                    char str [1000];
+                    scanf("%s", str);
+                    varptr[index].sval[p] = str;
                 }
             }
         }
@@ -100,18 +132,13 @@
                     printf("%d\n", varptr[index].ival[0]);
                 } else if(varptr[index].type == DECIMAL) {
                     printf("%lf\n", varptr[index].dval[0]);
+                } else if(varptr[index].type == STRING) {
+                    printf("%s\n", varptr[index].sval[0]);
                 }
             }
         }
     }
-    int get_var_index(char *name) {
-        for(int i = 0; i < VAR_CNT; ++i) {
-            if(strcmp(varptr[i].name, name) == 0) {
-                return i;
-            }
-        }
-        return -1;
-    }
+    
     int get_function_index(char *name){
         for(int i = 0; i < FUNC_CNT; ++i) {
             if(strcmp(funcptr[i].fname, name) == 0) {
@@ -120,9 +147,7 @@
         }
         return -1;
     }
-    void var_does_not_exist(char *name) {
-        printf("Variable named \"%s\" doesn't exist.\n", name);
-    }
+    
     
 %}
 
@@ -136,8 +161,9 @@
 
 %token HEADER SCOMMENT MCOMMENT EOL
 %token VARIABLE ARROW INPUT PRINT
-%token NUMBER_TYPE DECIMAL_TYPE
-%token NUMBER_VALUE DECIMAL_VALUE
+%token NUMBER_TYPE DECIMAL_TYPE STRING_TYPE
+%token NUMBER_VALUE DECIMAL_VALUE STRING_VALUE
+%token POW SIN COS TAN LOG10 LOG2 LN SQRT
 %token AND OR XOR NOT
 %token INC DEC
 %token LT GT EQL NEQL LEQL GEQL
@@ -146,8 +172,8 @@
 %token DEF CALL
 
 %type <integer> NUMBER_VALUE
-%type <real> DECIMAL_VALUE statements statement assignment expr while_conditions
-%type <string> VARIABLE NUMBER_TYPE DECIMAL_TYPE
+%type <real> DECIMAL_VALUE statements statement assignment expr while_conditions POW SIN COS TAN LOG10 LOG2 LN SQRT
+%type <string> VARIABLE NUMBER_TYPE DECIMAL_TYPE STRING_TYPE STRING_VALUE
 
 %nonassoc ELIF 
 %nonassoc ELSE
@@ -161,8 +187,10 @@
 %%
 
 program:
-    statements {
+    HEADER statements {
         printf("Header Found!\n");
+    }
+    | statements {
     }
 ;
 
@@ -478,7 +506,49 @@ single_else_block:
 
 declarations:
     NUMBER_TYPE num_vars
+    |DECIMAL_TYPE dec_vars
+    |STRING_TYPE str_vars
 ;
+
+str_vars:
+    str_vars ',' str_var
+    |str_var
+;
+str_var:
+    VARIABLE '=' STRING_VALUE {
+        int exists = check_unique($1);
+        if(exists == DUPLICATE) {
+            not_unique($1);
+        } else {
+            char *value = $3;
+            store_value($1, STRING, 1, VAR_CNT, &value, 0);
+            VAR_CNT++;
+        }
+    }
+    |VARIABLE {
+        char *value = "";
+        store_value($1, STRING, 1, VAR_CNT, &value, 0);
+        VAR_CNT++;
+    }
+dec_vars:
+    dec_vars ',' dec_var
+    |dec_var
+;
+dec_var:
+    VARIABLE '=' expr {
+        if(check_unique($1) == DUPLICATE) {
+            not_unique($1);
+        } else {
+            double value = $3;
+            store_value($1, DECIMAL, 1, VAR_CNT, &value, 0);
+            VAR_CNT++;
+        }
+    }
+    |VARIABLE {
+        double value = 0.0;
+        store_value($1, DECIMAL, 1, VAR_CNT, &value, 0);
+        VAR_CNT++;
+    }
 
 num_vars: 
     num_vars ',' num_var
@@ -566,6 +636,10 @@ expr:
 
         $$ = (int)$1 % (int)$3;
     }
+    |expr POW expr {
+
+        $$ = pow($1, $3);
+    }
     |expr EQL expr         
     {
         $$ = ($1 == $3);
@@ -629,6 +703,30 @@ expr:
 
         }
     }
+    |'(' expr ')' {
+        $$ = $2;
+    }
+    |SIN '(' expr ')' {
+        $$ = sin($3);
+    }
+    |COS '(' expr ')' {
+        $$ = cos($3);
+    }
+    |TAN '(' expr ')' {
+        $$ = tan($3);
+    }
+    |LOG10 '(' expr ')' {
+        $$ = log10($3);
+    }
+    |LOG2 '(' expr ')' {
+        $$ = log2($3);
+    }
+    |LN '(' expr ')' {
+        $$ = log($3);
+    }
+    |SQRT '(' expr ')' {
+        $$ = sqrt($3);
+    }
 ; 
     
 
@@ -636,9 +734,12 @@ expr:
 int main() {
     varptr = malloc(MAXN_VAR_ALLOWED * sizeof(info));
     funcptr = malloc(MAXN_FUNC_ALLOWED * sizeof(stack));
-    // FILE *yyin = freopen("input.txt", "r", stdin);
+    FILE *yyin = freopen("input.txt", "r", stdin);
+    // FILE *yyin = freopen("test.txt", "r", stdin);
+    // FILE *yyout = freopen("output.txt", "w", stdout);
     yyparse();
-    // fclose(yyin);
+    fclose(yyin);
+    // fclose(yyout);
     free(varptr);
     free(funcptr);
     return 0;

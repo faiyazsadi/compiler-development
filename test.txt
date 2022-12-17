@@ -1,0 +1,5 @@
+import file.h
+
+decimal p = 10, q = p;
+string a = "text";
+print(a);
