@@ -188,9 +188,10 @@
 
 program:
     HEADER statements {
-        printf("Header Found!\n");
+        printf("COMPILATION SUCCESSFUL!\n");
     }
     | statements {
+        printf("COMPILATION SUCCESSFUL!\n");
     }
 ;
 
@@ -201,6 +202,7 @@ statements:
 
 statement: 
     EOL
+    |statement EOL statement
     |SCOMMENT
     |MCOMMENT
     |input EOL
@@ -217,9 +219,7 @@ statement:
 ;
 
 print:
-    PRINT '(' output_variable ')' {
-
-    }
+    PRINT '(' output_variable ')' {}
 ;
 output_variable:
     output_variable ',' VARIABLE {
@@ -245,13 +245,12 @@ input_variable:
     }
 
 function_declare:
-    DEF function_name '(' function_variable ')' ARROW return_types '{' statement '}' {
-        printf("FUNCTION DECLARATION\n");
-    }
+    DEF function_name '(' function_variable ')' ARROW return_types '{' statement '}' {}
 ;
 return_types:
     NUMBER_TYPE
     |DECIMAL_TYPE
+    |STRING_TYPE
 ;
 
 function_name:
@@ -294,7 +293,7 @@ single_variable:
 ;
 
 function_call:
-    CALL user_function_name '(' parameters ')' EOL {
+    CALL user_function_name '(' parameters ')' {
         if(function_rejected) {
             printf("Function Not Declared.\n");
         } else {
@@ -324,7 +323,7 @@ parameters:
 single_parameter: 
     VARIABLE {
         int index = get_var_index($1);
-        if(current_parameter > funcptr[current_function].var_cnt) {
+        if(current_parameter >= funcptr[current_function].var_cnt) {
             printf("Way too many arguments.\n");
             function_rejected = 1;
         } else if(funcptr[current_function].fptr[current_parameter].type != varptr[index].type) {
@@ -735,11 +734,10 @@ int main() {
     varptr = malloc(MAXN_VAR_ALLOWED * sizeof(info));
     funcptr = malloc(MAXN_FUNC_ALLOWED * sizeof(stack));
     FILE *yyin = freopen("input.txt", "r", stdin);
-    // FILE *yyin = freopen("test.txt", "r", stdin);
-    // FILE *yyout = freopen("output.txt", "w", stdout);
+    FILE *yyout = freopen("output.txt", "w", stdout);
     yyparse();
     fclose(yyin);
-    // fclose(yyout);
+    fclose(yyout);
     free(varptr);
     free(funcptr);
     return 0;

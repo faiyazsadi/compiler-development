@@ -1,5 +1,7 @@
-import file.h
+def func(number a) -> number {
+    ;
+}
+number b = 10;
+call func(b);
 
-decimal p = 10, q = p;
-string a = "text";
-print(a);
+int a = 10, b = a + 20;

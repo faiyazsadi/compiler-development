@@ -1,0 +1,87 @@
+SINGLELINE COMMENT DETECTED! The Comment is: 
+single line comment
+MULTILINE COMMENT DETECTED! The Comment is: 
+multi line comment 
+Variable name is: val
+Variable value is: 0.893997
+Variable name is: p
+Variable value is: 8.000000
+Variable name is: x
+Variable value is: 1
+Variable name is: y
+Variable value is: 0
+Variable name is: z
+Variable value is: 1
+Variable name is: a
+Variable value is: 11
+Variable name is: b
+Variable value is: 20
+Variable name is: c
+Variable value is: 2
+Value of a is: 11
+Value of b is: 20
+Value of c is: 2
+Variable name is: d
+Variable value is: 1.100000
+Variable name is: e
+Variable value is: 1.100000
+Variable name is: s
+Variable value is: text
+Value of s is: text
+SINGLELINE COMMENT DETECTED! The Comment is: 
+input(a, b);
+SINGLELINE COMMENT DETECTED! The Comment is: 
+input(d);
+Variable name is: es
+Variable value is: 10
+IF BLOCK
+Condition Didn't match in IF Block.
+Variable name is: eq
+Variable value is: 69
+Condition Matched in ELIF Block.
+Variable name is: ef
+Variable value is: 20
+Condition Already Matched.
+Variable name is: aa
+Variable value is: 2
+Value of aa is: 2
+Variable name is: bb
+Variable value is: 1
+Value of bb is: 1
+Value of a is: 11
+For Loop Block
+For Loop Iteration: 1
+For Loop Iteration: 2
+For Loop Iteration: 3
+For Loop Iteration: 4
+For Loop Iteration: 5
+Value of a is: 11
+WHILE BLOCK
+WHILE Loop Iteration: 1
+WHILE Loop Iteration: 2
+WHILE Loop Iteration: 3
+WHILE Loop Iteration: 4
+WHILE Loop Iteration: 5
+WHILE Loop Iteration: 6
+WHILE Loop Iteration: 7
+WHILE Loop Iteration: 8
+WHILE Loop Iteration: 9
+WHILE Loop Iteration: 10
+Value of a is: 11
+WHILE BLOCK
+WHILE Loop Iteration: 1
+WHILE Loop Iteration: 2
+WHILE Loop Iteration: 3
+WHILE Loop Iteration: 4
+WHILE Loop Iteration: 5
+Value of a is: 11
+WHILE BLOCK
+WHILE Loop Iteration: 1
+WHILE Loop Iteration: 2
+WHILE Loop Iteration: 3
+WHILE Loop Iteration: 4
+Declaring Function
+Variable name is: arg
+Variable value is: 0
+Function Successfully Called.
+COMPILATION SUCCESSFUL!

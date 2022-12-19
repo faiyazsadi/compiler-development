@@ -51,8 +51,8 @@ while(b-- > 15) {
 while(a++ !!! 15) {
     print(a);
 }
-def func() -> number {
+
+def func(number arg) -> number {
     ;
 }
-
-call func();
+call func(a);
