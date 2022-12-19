@@ -1,7 +1,0 @@
-def func(number a) -> number {
-    ;
-}
-number b = 10;
-call func(b);
-
-int a = 10, b = a + 20;
